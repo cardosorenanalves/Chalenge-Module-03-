@@ -1,10 +1,13 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { GetStaticProps } from 'next';
 
 import { FiUser, FiCalendar } from 'react-icons/fi';
 import { getPrismicClient } from '../services/prismic';
 
-import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 
 interface Post {
@@ -18,7 +21,7 @@ interface Post {
 }
 
 interface PostPagination {
-  next_page: string;
+  next_page?: string;
   results: Post[];
 }
 
@@ -26,33 +29,55 @@ interface HomeProps {
   postsPagination: PostPagination;
 }
 
-export default function Home() {
+export default function Home({ postsPagination }: HomeProps) {
   return (
     <main className={styles.conteiner}>
       <div className={styles.post}>
-        <a href="#">
-          <strong>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-          </strong>
-          <p className={styles.content}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui
-            architecto saepe asperiores eveniet.
-          </p>
-          <div className={styles.info}>
-            <FiCalendar />
-            <time>13 Set 2022</time>
-            <FiUser />
-            <p>José Cardoso</p>
-          </div>
-        </a>
+        {postsPagination.results.map(post => (
+          <a key={post.uid} href="#">
+            <strong>{post.data.title}</strong>
+            <p className={styles.content}>{post.data.subtitle}</p>
+            <div className={styles.info}>
+              <FiCalendar />
+              <time>{post.first_publication_date}</time>
+              <FiUser />
+              <p>{post.data.author}</p>
+            </div>
+          </a>
+        ))}
       </div>
     </main>
   );
 }
 
-// export const getStaticProps = async () => {
-//   // const prismic = getPrismicClient({});
-//   // const postsResponse = await prismic.getByType(TODO);
+export const getStaticProps: GetStaticProps = async () => {
+  const prismic = getPrismicClient();
 
-//   // TODO
-// };
+  const response = await prismic.getByType('posts', {
+    lang: 'pt-BR',
+  });
+
+  const results = response.results.map(post => {
+    return {
+      uid: post.uid,
+      data: {
+        title: post.data.title,
+        subtitle: post.data.subtitle,
+        author: post.data.author,
+      },
+      first_publication_date: format(new Date(), 'dd MMM yyyy', {
+        locale: ptBR,
+      }),
+    };
+  });
+
+  const postsPagination = {
+    results,
+  };
+
+  return {
+    props: {
+      postsPagination,
+    },
+  };
+};
