@@ -1,1 +1,56 @@
-// TODO
+ .conteiner{
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 10rem; 
+ }
+
+ .post{
+    
+
+    a {
+        display: block;
+        & + a{
+            margin-top: 2rem;
+            padding-top: 2rem;
+        }
+
+        strong{
+            font-size: 1.5rem;
+        }
+
+        &:hover strong {
+            color: var(--Highlight);
+        }
+
+    }
+
+ }
+
+ .content{
+    margin-top: 0.5rem;
+ }
+ 
+
+ .info{
+    display: flex;
+    flex-direction: row;
+    margin-top: 1.5rem;
+    align-items: center;
+
+    
+
+    time{
+        color: var(--Body);
+        font-size: 0.85rem;
+        margin-left: 0.5rem;
+        margin-right: 1rem;
+    }
+
+    p{
+        color: var(--Body);
+        font-size: 0.85rem;
+        margin-left: 0.5rem;
+    }
+
+    
+ }
