@@ -21,7 +21,7 @@ interface Post {
 }
 
 interface PostPagination {
-  next_page?: string;
+  next_page: string;
   results: Post[];
 }
 
@@ -46,6 +46,7 @@ export default function Home({ postsPagination }: HomeProps) {
           </a>
         ))}
       </div>
+      {postsPagination.next_page != null ? <h1>olaaaaaaa</h1> : null}
     </main>
   );
 }
@@ -55,7 +56,10 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const response = await prismic.getByType('posts', {
     lang: 'pt-BR',
+    pageSize: 2,
   });
+
+  console.log(response);
 
   const results = response.results.map(post => {
     return {
@@ -73,6 +77,7 @@ export const getStaticProps: GetStaticProps = async () => {
 
   const postsPagination = {
     results,
+    next_page: response.next_page,
   };
 
   return {
