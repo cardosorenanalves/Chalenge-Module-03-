@@ -32,3 +32,14 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+.env
+
+yarn.lock
+
+/.slicemachine
+/.swc
+/customtypes
+/slices
+
+sm.json
