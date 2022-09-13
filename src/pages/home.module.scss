@@ -2,6 +2,7 @@
     max-width: 1120px;
     margin: 0 auto;
     padding: 0 10rem; 
+    margin-top: 1.5rem;
  }
 
  .post{
@@ -10,7 +11,7 @@
     a {
         display: block;
         & + a{
-            margin-top: 2rem;
+            margin-top: 0.5rem;
             padding-top: 2rem;
         }
 
