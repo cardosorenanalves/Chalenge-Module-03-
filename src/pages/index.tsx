@@ -46,7 +46,21 @@ export default function Home({ postsPagination }: HomeProps) {
     fetch(nextPage)
       .then(t => t.json())
       .then(response => {
-        const data = [...posts, ...response.results];
+        const results = response.results.map(post => {
+          return {
+            uid: post.uid,
+            data: {
+              title: post.data.title,
+              subtitle: post.data.subtitle,
+              author: post.data.author,
+            },
+            first_publication_date: format(new Date(), 'dd MMM yyyy', {
+              locale: ptBR,
+            }),
+          };
+        });
+
+        const data = [...posts, ...results];
         setNextPage(response.next_page);
         setPosts(data);
       });
@@ -83,6 +97,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const prismic = getPrismicClient();
 
   const response = await prismic.getByType('posts', {
+    pageSize: 1,
     lang: 'pt-BR',
   });
 
@@ -109,5 +124,6 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       postsPagination,
     },
+    revalidate: 60 * 60 * 24,
   };
 };
