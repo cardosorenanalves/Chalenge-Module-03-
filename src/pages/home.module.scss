@@ -16,6 +16,7 @@
         }
 
         strong{
+            transition: all 0.2s;
             font-size: 1.5rem;
         }
 
@@ -54,4 +55,20 @@
     }
 
     
+ }
+
+ .loadingPosts{
+    margin-top: 3rem;
+    
+    p{
+        cursor: pointer;
+        color: var(--Highlight);
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s;
+    }
+
+    &:hover p {
+        filter: brightness(0.8);
+    }
  }
