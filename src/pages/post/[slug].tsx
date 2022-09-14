@@ -29,7 +29,20 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post() {
+export default function Post({ post }: PostProps) {
+  function postTime(contentBody: any): string {
+    const words = contentBody
+      .map((item: any) => {
+        return RichText.asText(item.body).split(' ');
+      })
+      .reduce((acc, curr) => [...curr, ...acc], [])
+      .filter(i => i !== '');
+
+    const min = Math.ceil(words.length / 200);
+
+    return `${min} min`;
+  }
+
   return (
     <main>
       {/* <img src="" alt="banner do post" />
