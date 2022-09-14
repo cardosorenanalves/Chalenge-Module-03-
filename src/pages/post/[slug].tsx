@@ -1,7 +1,9 @@
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { GetStaticPaths, GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
 import { RichText } from 'prismic-dom';
+import { FiCalendar, FiClock, FiUser } from 'react-icons/fi';
 
 import { getPrismicClient } from '../../services/prismic';
 
@@ -30,6 +32,8 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps) {
+  const router = useRouter();
+
   function postTime(contentBody: any): string {
     const words = contentBody
       .map((item: any) => {
@@ -43,23 +47,47 @@ export default function Post({ post }: PostProps) {
     return `${min} min`;
   }
 
-  return (
-    <main>
-      {/* <img src="" alt="banner do post" />
-      <article className={styles.post}>
-        <h1>{post.title}</h1>
-        <div className={styles.info}>
-          <FiCalendar />
-          <time>{post.first_publication_date}</time>
-          <FiUser />
-          <p>{post.data.author}</p>
-        </div>
-        <div
-          className={styles.postContent}
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
-      </article> */}
-    </main>
+  return router.isFallback ? (
+    <div>Carregando...</div>
+  ) : (
+    <>
+      <div className={styles.banner}>
+        <img src={post.data.banner.url} alt="banner do post" />
+      </div>
+      <main className={styles.conteiner}>
+        <article className={styles.post}>
+          <h1>{post.data.title}</h1>
+          <div className={styles.info}>
+            <FiCalendar />
+            <time>{post.first_publication_date}</time>
+            <FiUser />
+            <p>{post.data.author}</p>
+            <FiClock />
+            <time>{postTime(post.data.content)}</time>
+          </div>
+          <div>
+            {post.data.content.map(content => {
+              return (
+                <>
+                  <div className={styles.heading}>
+                    <h3>{content.heading}</h3>
+                  </div>
+                  <div
+                    className={styles.postContent}
+                    dangerouslySetInnerHTML={{
+                      __html: Array.isArray(content.body)
+                        ? RichText.asHtml(content.body)
+                        : content.body,
+                    }}
+                  />
+                </>
+              );
+            })}
+          </div>
+          <div className={styles.footer} />
+        </article>
+      </main>
+    </>
   );
 }
 
